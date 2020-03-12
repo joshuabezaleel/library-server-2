@@ -7,10 +7,9 @@ import (
 )
 
 func main() {
-	repository := persistence.NewRepository()
-	defer repository.DB.Close()
+	bookRepository := persistence.NewBookRepository()
 
-	bookService := book.NewBookService(repository.BookRepository)
+	bookService := book.NewBookService(bookRepository)
 
 	srv := server.NewServer(bookService)
 	srv.Run("8082")

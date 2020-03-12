@@ -27,10 +27,10 @@ func NewBookService(bookRepository Repository) Service {
 }
 
 func (s *service) GetAll() ([]*Book, error) {
-	ducks, err := s.bookRepository.GetAll()
+	books, err := s.bookRepository.GetAll()
 	if err != nil {
 		return nil, ErrGetAll
 	}
 
-	return ducks, nil
+	return books, nil
 }
