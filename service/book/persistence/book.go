@@ -28,26 +28,26 @@ var allBooks = []*book.Book{
 }
 
 var booksTopics = map[int][]int{
+	0:  []int{1},
 	1:  []int{1},
-	2:  []int{1},
-	3:  []int{1, 2},
-	4:  []int{1, 4},
-	5:  []int{2},
-	6:  []int{2, 3},
+	2:  []int{1, 2},
+	3:  []int{1, 4},
+	4:  []int{2},
+	5:  []int{2, 3},
+	6:  []int{2},
 	7:  []int{2},
 	8:  []int{2},
 	9:  []int{2},
-	10: []int{2},
-	11: []int{2, 4},
-	12: []int{3, 1},
+	10: []int{2, 4},
+	11: []int{3, 1},
+	12: []int{3},
 	13: []int{3},
-	14: []int{3},
-	15: []int{3, 4},
+	14: []int{3, 4},
+	15: []int{4},
 	16: []int{4},
 	17: []int{4},
 	18: []int{4},
 	19: []int{4},
-	20: []int{4},
 }
 
 var allTopics = map[int]string{
@@ -68,10 +68,14 @@ func NewBookRepository() book.Repository {
 func (repo *bookRepository) GetAll(topicIDs []int) ([]*book.Book, error) {
 	var books []*book.Book
 
-	for bookID, bookTopicIDs := range booksTopics {
-		if haveTopic(bookTopicIDs, topicIDs) {
-			books = append(books, allBooks[bookID])
+	if len(topicIDs) != 4 {
+		for bookID, bookTopicIDs := range booksTopics {
+			if haveTopic(bookTopicIDs, topicIDs) {
+				books = append(books, allBooks[bookID])
+			}
 		}
+	} else {
+		books = allBooks
 	}
 
 	return books, nil

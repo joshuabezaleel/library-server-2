@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
-	"strings"
 
 	"github.com/joshuabezaleel/library-server-2/service/book/book"
 
@@ -24,17 +23,35 @@ func (handler *bookHandler) getAllBooks(w http.ResponseWriter, r *http.Request) 
 
 	queryValues := r.URL.Query()
 
-	topics := queryValues.Get("topics")
-	if topics != "" {
-		topicIDsString := strings.Split(topics, " ")
-		for _, topicIDString := range topicIDsString {
+	topics := queryValues["topics"]
+	if topics != nil {
+		// topicIDsString := strings.Split(topics, " ")
+		for _, topicIDString := range topics {
 			topicID, _ := strconv.Atoi(topicIDString)
 
 			topicIDs = append(topicIDs, topicID)
 		}
+	} else {
+		topicIDs = []int{1, 2, 3, 4}
 	}
 
-	books, err := handler.bookService.GetAll(topicIDs)
+	var sort string
+	sortParam, ok := queryValues["sort"]
+	if !ok {
+		sort = "Title"
+	} else {
+		sort = sortParam[0]
+	}
+
+	var order string
+	orderParam, ok := queryValues["order"]
+	if !ok {
+		order = "asc"
+	} else {
+		order = orderParam[0]
+	}
+
+	books, err := handler.bookService.GetAll(topicIDs, sort, order)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
