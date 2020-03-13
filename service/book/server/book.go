@@ -3,6 +3,8 @@ package server
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/joshuabezaleel/library-server-2/service/book/book"
 
@@ -18,7 +20,21 @@ func (handler *bookHandler) registerRouter(router *mux.Router) {
 }
 
 func (handler *bookHandler) getAllBooks(w http.ResponseWriter, r *http.Request) {
-	books, err := handler.bookService.GetAll()
+	var topicIDs []int
+
+	queryValues := r.URL.Query()
+
+	topics := queryValues.Get("topics")
+	if topics != "" {
+		topicIDsString := strings.Split(topics, " ")
+		for _, topicIDString := range topicIDsString {
+			topicID, _ := strconv.Atoi(topicIDString)
+
+			topicIDs = append(topicIDs, topicID)
+		}
+	}
+
+	books, err := handler.bookService.GetAll(topicIDs)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return

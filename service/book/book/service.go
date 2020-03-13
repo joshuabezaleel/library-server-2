@@ -13,7 +13,7 @@ var (
 
 // Service provides basic operations on Book domain model.
 type Service interface {
-	GetAll() ([]*Book, error)
+	GetAll(topicIDs []int) ([]*Book, error)
 	GetBookTopicIDs(bookID int) ([]int, error)
 	GetTopicsByID(topicIDs []int) ([]string, error)
 }
@@ -30,8 +30,8 @@ func NewBookService(bookRepository Repository) Service {
 	}
 }
 
-func (s *service) GetAll() ([]*Book, error) {
-	books, err := s.bookRepository.GetAll()
+func (s *service) GetAll(topicIDs []int) ([]*Book, error) {
+	books, err := s.bookRepository.GetAll(topicIDs)
 	if err != nil {
 		return nil, ErrGetAll
 	}

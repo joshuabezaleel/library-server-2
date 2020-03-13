@@ -5,26 +5,26 @@ import (
 )
 
 var allBooks = []*book.Book{
-	&book.Book{ID: 1, Title: "Medic Without Shame", Author: "Richard Gizmo Seventh"},
-	&book.Book{ID: 2, Title: "Blacksmith Of The Forest", Author: "Mark R. Steel"},
-	&book.Book{ID: 3, Title: "Men With Determination", Author: "Maxwell Southwell"},
-	&book.Book{ID: 4, Title: "Snakes Of My Imagination", Author: "M. R. Smitherd"},
-	&book.Book{ID: 5, Title: "Soldiers And Witches", Author: "Gizmo Richards"},
-	&book.Book{ID: 6, Title: "Lions And Men", Author: "Richard Gizmo Seventh"},
-	&book.Book{ID: 7, Title: "Restoration Of Wood", Author: "Marissa Smirnova"},
-	&book.Book{ID: 8, Title: "Curse Of The River", Author: "Maree Markson"},
-	&book.Book{ID: 9, Title: "Write About Technology", Author: "Smith Markblood"},
-	&book.Book{ID: 10, Title: "Duke Of The North", Author: "Mathias R. Seventh"},
-	&book.Book{ID: 11, Title: "Tree Of Darkness", Author: "Ocean Roxie Northern"},
-	&book.Book{ID: 12, Title: "Humans Of The Ancestors", Author: "Wendell Billerbeck"},
-	&book.Book{ID: 13, Title: "Fish Of The Gods", Author: "Mathias R. Seventh"},
-	&book.Book{ID: 14, Title: "Doctors And Owls", Author: "Wearmouth O. Northern"},
-	&book.Book{ID: 15, Title: "Hunters And Assassins", Author: "Octavia Birszwilks"},
-	&book.Book{ID: 16, Title: "Surprise With Honor", Author: "Richard Gizmo Seventh"},
-	&book.Book{ID: 17, Title: "Choice Of Yesterday", Author: "Bishop Wenblood"},
-	&book.Book{ID: 18, Title: "Sounds In The East", Author: "Wes O. Armedrobber"},
-	&book.Book{ID: 19, Title: "Crying In The Stars", Author: "M. R. Smitherd"},
-	&book.Book{ID: 20, Title: "King With Sins", Author: "Joshua Bezaleel Abednego"},
+	&book.Book{ID: 0, Title: "Medic Without Shame", Author: "Richard Gizmo Seventh"},
+	&book.Book{ID: 1, Title: "Blacksmith Of The Forest", Author: "Mark R. Steel"},
+	&book.Book{ID: 2, Title: "Men With Determination", Author: "Maxwell Southwell"},
+	&book.Book{ID: 3, Title: "Snakes Of My Imagination", Author: "M. R. Smitherd"},
+	&book.Book{ID: 4, Title: "Soldiers And Witches", Author: "Gizmo Richards"},
+	&book.Book{ID: 5, Title: "Lions And Men", Author: "Richard Gizmo Seventh"},
+	&book.Book{ID: 6, Title: "Restoration Of Wood", Author: "Marissa Smirnova"},
+	&book.Book{ID: 7, Title: "Curse Of The River", Author: "Maree Markson"},
+	&book.Book{ID: 8, Title: "Write About Technology", Author: "Smith Markblood"},
+	&book.Book{ID: 9, Title: "Duke Of The North", Author: "Mathias R. Seventh"},
+	&book.Book{ID: 10, Title: "Tree Of Darkness", Author: "Ocean Roxie Northern"},
+	&book.Book{ID: 11, Title: "Humans Of The Ancestors", Author: "Wendell Billerbeck"},
+	&book.Book{ID: 12, Title: "Fish Of The Gods", Author: "Mathias R. Seventh"},
+	&book.Book{ID: 13, Title: "Doctors And Owls", Author: "Wearmouth O. Northern"},
+	&book.Book{ID: 14, Title: "Hunters And Assassins", Author: "Octavia Birszwilks"},
+	&book.Book{ID: 15, Title: "Surprise With Honor", Author: "Richard Gizmo Seventh"},
+	&book.Book{ID: 16, Title: "Choice Of Yesterday", Author: "Bishop Wenblood"},
+	&book.Book{ID: 17, Title: "Sounds In The East", Author: "Wes O. Armedrobber"},
+	&book.Book{ID: 18, Title: "Crying In The Stars", Author: "M. R. Smitherd"},
+	&book.Book{ID: 19, Title: "King With Sins", Author: "Joshua Bezaleel Abednego"},
 }
 
 var booksTopics = map[int][]int{
@@ -65,26 +65,16 @@ func NewBookRepository() book.Repository {
 	return &bookRepository{}
 }
 
-func (repo *bookRepository) GetAll() ([]*book.Book, error) {
-	// var oneBook *book.Book
-	// var allBooks []*book.Book
+func (repo *bookRepository) GetAll(topicIDs []int) ([]*book.Book, error) {
+	var books []*book.Book
 
-	// rows, err := repo.DB.Query("SELECT * FROM books")
-	// if err != nil {
-	// 	return nil, err
-	// }
+	for bookID, bookTopicIDs := range booksTopics {
+		if haveTopic(bookTopicIDs, topicIDs) {
+			books = append(books, allBooks[bookID])
+		}
+	}
 
-	// for rows.Next() {
-	// 	err = rows.Scan(oneBook)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-
-	// 	allBooks = append(allBooks, oneBook)
-	// }
-
-	// return allBooks, nil
-	return allBooks, nil
+	return books, nil
 }
 
 func (repo *bookRepository) GetBookTopicIDs(bookID int) ([]int, error) {
@@ -99,4 +89,16 @@ func (repo *bookRepository) GetTopicsByID(topicIDs []int) ([]string, error) {
 	}
 
 	return topics, nil
+}
+
+func haveTopic(bookTopicIDs []int, topicIDs []int) bool {
+	for _, bookTopicID := range bookTopicIDs {
+		for _, topicID := range topicIDs {
+			if bookTopicID == topicID {
+				return true
+			}
+		}
+	}
+
+	return false
 }
